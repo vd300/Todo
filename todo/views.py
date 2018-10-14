@@ -1,24 +1,27 @@
 from django.shortcuts import render,redirect
 from django.views.decorators.http import require_POST
 from .models import Todo
-from .forms import TodoForms
+from .forms import TodoForms,NewTodoForm
 
 def index(request):
-    form = TodoForms()
+    #form = TodoForms()
+    newtodoform = NewTodoForm()
     todo_list = Todo.objects.order_by('id')
     context = {
         'todo_list': todo_list,
-        'form': form
+        'form': newtodoform
     }
     return render(request, 'todo/index.html', context)
 
 @require_POST
 def addtodo(request):
-    form = TodoForms(request.POST)
+    #form = TodoForms(request.POST)
 
-    if form.is_valid():
-        new_todo = Todo(text=request.POST['text'])
-        new_todo.save()
+    newtodoform = NewTodoForm(request.POST)
+    if newtodoform.is_valid():
+       # new_todo = Todo(text=form.cleaned_data['text'])
+       # new_todo.save()
+        new_todo = newtodoform.save()
 
     return redirect('index')
 
